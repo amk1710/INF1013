@@ -1,3 +1,0 @@
-{"QtdMercadorias":0,"QtdPosicoes":0,"QtdCategorias":2}
-{"nome":"cat1","super_categoria":null}
-{"nome":"cat1.1","super_categoria":{"nome":"cat1","super_categoria":null}}

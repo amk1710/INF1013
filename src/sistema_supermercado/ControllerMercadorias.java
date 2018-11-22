@@ -122,9 +122,18 @@ public class ControllerMercadorias {
 			}
 		}
 		
-		Mercadoria mer = new Mercadoria(nome, desc, new float[] {x, y, z}, tipo, cat, codVenda, codArm);
-		System.out.println("Mercadoria criada com sucesso");
-		return mer;
+		try
+		{
+			Mercadoria mer = new Mercadoria(nome, desc, new float[] {x, y, z}, tipo, cat, codVenda, codArm);
+			System.out.println("Mercadoria criada com sucesso");
+			return mer;
+		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			return null;
+		}
+		
 		
 		
 	}
@@ -167,6 +176,20 @@ public class ControllerMercadorias {
 		
 		return nova;
 				
+	}
+	
+	public static Mercadoria IdentificarMercadoria(int codigo)
+	{
+		Mercadoria mer = Mercadoria.BuscaMercadoriaPorCodigo(codigo);
+		if(mer == null)
+		{
+			System.out.println("Mercadoria não encontrada");
+		}
+		else
+		{
+			mer.PrintMercadoria();
+		}
+		return mer;
 	}
 	
 }

@@ -91,7 +91,7 @@ public class PosicaoEmEstoque {
 		if(quantidade > CapacidadeLivre())
 		{
 			//impossível depositar essa quantidade
-			throw new IllegalArgumentException("PosicaoEmEstoque " + this.ID_Posicao + " não possue" + quantidade + "de capacidade livre");
+			throw new IllegalArgumentException("PosicaoEmEstoque " + this.ID_Posicao + " não possue " + quantidade + " de capacidade livre");
 		}
 		else if(mer.GetTipoDeArmazenamento() != this.tipoDeArmazenamento)
 		{
@@ -100,6 +100,11 @@ public class PosicaoEmEstoque {
 		else if(mer_dim[0] > dimensoes[0] || mer_dim[1] > dimensoes[1] || mer_dim[2] > dimensoes[2])
 		{
 			throw new IllegalArgumentException("Dimensões da mercadoria excedem as suportadas pela posição em estoque");
+		}
+		//mercadoria é obrigada a ter codigo de armazenamento para ser armazenada
+		else if(mer.GetCodigoDeArmazenamento() == null)
+		{
+			throw new IllegalArgumentException("Mercadoria é obrigada a ter codigo de armazenamento para ser armazenada");
 		}
 		
 		// se tá tudo ok, deposita
@@ -133,8 +138,9 @@ public class PosicaoEmEstoque {
 		//checa todas mercadorias nessa posição,
 		for(MercadoriaArmazenada merAr : estocados)
 		{
+			//System.out.println(merAr.mercadoria.GetName() + " vs. " + );
 			//se achar esta mercadoria nesta posição,
-			if(merAr.mercadoria.GetName() == mer.GetName())
+			if(merAr.mercadoria.GetName().equals(mer.GetName()))
 			{
 				//se tiver armazenada quantidade suficiente, remove
 				if(merAr.quantidadeArmazenada >= quantidade)
@@ -153,6 +159,26 @@ public class PosicaoEmEstoque {
 		//se não achar a mercadoria, erro
 		throw new IllegalArgumentException("Não há mercadorias " + mer.GetName() + " nesta posição em estoque");
 	}
+	
+	public static PosicaoEmEstoque BuscaPosicao(int id)
+	{
+		if(armazenamento == null)
+		{
+			armazenamento = new ArrayList<PosicaoEmEstoque>();
+		}
+		
+		for(PosicaoEmEstoque pos : armazenamento)
+		{
+			if(pos.ID_Posicao == id)
+			{
+				return pos;
+			}
+		}
+		
+		//se não encontrou, retorna null
+		return null;
+		
+	}
 
 	public static List<PosicaoEmEstoque> GetArmazenamento()
 	{
@@ -169,7 +195,10 @@ public class PosicaoEmEstoque {
 		{
 			armazenamento = new ArrayList<PosicaoEmEstoque>();
 		}
-		armazenamento.add(pos);
+		if(!armazenamento.contains(pos))
+		{
+			armazenamento.add(pos);
+		}
 	}
 	
 	public static void Clear()

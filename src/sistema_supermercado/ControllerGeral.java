@@ -13,21 +13,26 @@ public class ControllerGeral {
 		
 		//abre scanner
 		Scanner input = new Scanner(System.in);
-		
 		while(true)
 		{
 			System.out.println("O que fazer?");
+			System.out.print("(0): Identificar mercadoria por código, ");
 			System.out.print("(1): Cadastrar nova categoria, ");
 			System.out.print("(2): Cadastrar nova mercadoria, ");
-			System.out.print("(3): Cadastrar nova posição em estoque, ");	
-			System.out.print("(4): Salvar estado do sistema, ");
-			System.out.print("(5): Carregar estado, ");
-			System.out.println("(6): Printa catálogo de mercadorias registradas.");
+			System.out.print("(3): Cadastrar nova posição em estoque, ");
+			System.out.print("(4): Registrar nova movimentação de estoque, ");
+			System.out.print("(5): Salvar estado do sistema, ");
+			System.out.print("(6): Carregar estado, ");
+			System.out.println("(7): Printa catálogo de mercadorias registradas.");
 			
-			int i = IO_Auxiliary.GetInt(input, 1, 6, "");
+			int i = IO_Auxiliary.GetInt(input, 0, 7, "");
 			
 			switch(i)
 			{
+				case 0:
+					int codigo = IO_Auxiliary.GetInt(input, 0, Integer.MAX_VALUE, "Insira codigo a ser buscado");
+					ControllerMercadorias.IdentificarMercadoria(codigo);
+					break;
 				case 1:
 					ControllerMercadorias.CadastroDeNovaCategoria(input);
 					break;
@@ -35,11 +40,15 @@ public class ControllerGeral {
 					ControllerMercadorias.CadastroDeNovaMercadoria(input);
 					break;
 				case 3:
-					//ControllerEstocagem.RegistroNovaPosicaoEmEstoque(input);
-					ControllerEstocagem.TesteLegal();
+					ControllerEstocagem.RegistroNovaPosicaoEmEstoque(input);
+					//ControllerEstocagem.TesteLegal();
 					break;
 				
 				case 4:
+					ControllerEstocagem.RegistroNovaEstocagem(input);
+					break;
+					
+				case 5:
 				{
 					System.out.println("Qual o nome do arquivo onde deve ser salvo o estado atual?");
 					String path = input.nextLine();
@@ -52,7 +61,7 @@ public class ControllerGeral {
 					}
 					break;
 				}
-				case 5:
+				case 6:
 				{	
 					System.out.println("Qual o nome do arquivo de onde deve ser carregado o estado?");
 				
@@ -67,7 +76,7 @@ public class ControllerGeral {
 					
 					break;
 				}
-				case 6:
+				case 7:
 					Mercadoria.PrintAllMercadorias();
 					break;
 					
@@ -97,7 +106,7 @@ public class ControllerGeral {
 		{
 			writer = new FileWriter(path);
 			//grava quantidades de tudo:
-			Quantities qtds = new Quantities(Mercadoria.GetCatalogo().size(), PosicaoEmEstoque.GetArmazenamento().size(), Categoria.GetCategorias().size());
+			Quantities qtds = new Quantities(Mercadoria.GetCatalogo().size(), PosicaoEmEstoque.GetArmazenamento().size(), Categoria.GetCategorias().size(), Estocagem.GetEstocagem().size());
 			gson.toJson(qtds, writer);
 			writer.write("\n");
 			
@@ -122,6 +131,14 @@ public class ControllerGeral {
 				gson.toJson(cat, writer);
 				writer.write("\n");
 			}
+			
+			//grava estocagens
+			for(Estocagem es : Estocagem.GetEstocagem())
+			{
+				gson.toJson(es, writer);
+				writer.write("\n");
+			}
+			
 		}
 		finally
 		{
@@ -148,6 +165,7 @@ public class ControllerGeral {
 		Mercadoria.Clear();
 		PosicaoEmEstoque.Clear();
 		Categoria.Clear();
+		Estocagem.Clear();
 		
 		for(int i = 0; i < qtds.QtdMercadorias; i++)
 		{
@@ -167,6 +185,12 @@ public class ControllerGeral {
 			Categoria.AddToCategorias((Categoria)jcat);
 		}
 		
+		for(int i = 0; i < qtds.QtdEstocagens; i++)
+		{
+			Object jes = gson.fromJson(buffReader.readLine(), Estocagem.class);
+			Estocagem.AddToEstocagens((Estocagem) jes);
+		}		
+		
 		buffReader.close();
 		
 		//System.out.println(json.getClass());
@@ -183,11 +207,13 @@ class Quantities
 	public int QtdMercadorias;
 	public int QtdPosicoes;
 	public int QtdCategorias;
+	public int QtdEstocagens;
 	
-	Quantities(int qtdMercadorias, int qtdPosicoes, int qtdCategorias)
+	Quantities(int qtdMercadorias, int qtdPosicoes, int qtdCategorias, int qtdEstocagens)
 	{
 		this.QtdMercadorias = qtdMercadorias;
 		this.QtdPosicoes = qtdPosicoes;
 		this.QtdCategorias = qtdCategorias;
+		this.QtdEstocagens = qtdEstocagens;
 	}
 }

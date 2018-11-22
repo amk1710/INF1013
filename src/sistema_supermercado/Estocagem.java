@@ -46,7 +46,7 @@ public class Estocagem {
 			throw new IllegalArgumentException("Argumentos nulos não são válidos");
 		}
 		
-		//faz a movimentação
+		//registra a movimentação na posição
 		posicao.FazerMovimentacao(mercadoria, qtdTransferida, tipo);
 		
 		//se tudo certo, adiciona à lista:
@@ -56,6 +56,36 @@ public class Estocagem {
 		}
 		estocagens.add(this);
 		
+	}
+	
+	public static void Clear()
+	{
+		if(estocagens == null)
+		{
+			estocagens = new ArrayList<Estocagem>();
+		}
+		estocagens.clear();
+	}
+	
+	public static List<Estocagem> GetEstocagem()
+	{
+		if(estocagens == null)
+		{
+			estocagens = new ArrayList<Estocagem>();
+		}
+		return estocagens;
+	}
+	
+	public static void AddToEstocagens(Estocagem es)
+	{
+		if(estocagens == null)
+		{
+			estocagens = new ArrayList<Estocagem>();
+		}
+		if(!estocagens.contains(es))
+		{
+			estocagens.add(es);
+		}
 	}
 
 }

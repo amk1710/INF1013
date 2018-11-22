@@ -12,7 +12,7 @@ public class ControllerEstocagem {
 		System.out.println("Insira o identificador de localização para a nova posição:");
 		String coords = input.nextLine();
 		
-		System.out.println("Digite as dimensões da mercadoria:");
+		System.out.println("Digite as dimensões da posição:");
 		float x = IO_Auxiliary.GetFloat(input, Float.MIN_VALUE, Float.MAX_VALUE, "x:");
 		float y = IO_Auxiliary.GetFloat(input, Float.MIN_VALUE, Float.MAX_VALUE, "y:");
 		float z = IO_Auxiliary.GetFloat(input, Float.MIN_VALUE, Float.MAX_VALUE, "z:");
@@ -28,30 +28,63 @@ public class ControllerEstocagem {
 	
 	public static Estocagem RegistroNovaEstocagem(Scanner input)
 	{
-		//Estocagem(PosicaoEmEstoque posicao, Mercadoria mercadoria, Date data, TipoDeMovimentacao tipo, float qtdTransferida)
-		return null;
-	}
-	
-	
-	public static void TesteLegal()
-	{
-		System.out.println("Teste legal");
-		Categoria cat = new Categoria("cat1");
-		Mercadoria mer = new Mercadoria("asdasd", "asdasdasdasd", new float[] {1.0f, 1.0f, 1.0f}, TipoDeArmazenamento.REGULAR, cat, null, new CodigoDeArmazenamento(1001));
-		Mercadoria mer2 = new Mercadoria("hdfghdfghdfh", "asdasdasdasd", new float[] {1.0f, 1.0f, 1.0f}, TipoDeArmazenamento.REGULAR, cat, null, new CodigoDeArmazenamento(1000));
+		System.out.println("Registro de nova movimentação no estoque");
 		
-		PosicaoEmEstoque pos = new PosicaoEmEstoque(12, "dasdasd", new float[] {1.0f, 1.0f, 1.0f}, TipoDeArmazenamento.REGULAR, 100);
-		
-		try {
-			System.out.println(pos.CapacidadeLivre());
-			pos.Depositar(mer, 30);
-			pos.Depositar(mer, 30);
-			pos.Depositar(mer, 30);
-			pos.Remover(mer2, 40);
+		PosicaoEmEstoque pos = null;
+		do
+		{
+			int id = IO_Auxiliary.GetInt(input, -1, Integer.MAX_VALUE, "Insira o id de uma posição em estoque já registrada, ou -1 para abortar");
+			if(id == -1)
+			{
+				System.out.println("Registro abortado");
+				return null;
+			}
+			pos = PosicaoEmEstoque.BuscaPosicao(id);
+			if(pos == null)
+			{
+				System.out.println("Posição não encontrada");
+			}
 			
-			System.out.println(pos.CapacidadeLivre());
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			
+		} while (pos == null);
+		
+		Mercadoria mer = null;
+		do
+		{
+			int cod = IO_Auxiliary.GetInt(input, -1, Integer.MAX_VALUE, "Insira o código de uma mercadoria já registrada, ou -1 para abortar");
+			if(cod == -1)
+			{
+				System.out.println("Registro abortado");
+				return null;
+			}
+			mer = Mercadoria.BuscaMercadoriaPorCodigo(cod);
+			if(mer == null)
+			{
+				System.out.println("Mercadoria não encontrada");
+			}
+		}while(mer == null);
+		
+		//data é a data de agora
+		Date data = new Date();
+		
+		int t = IO_Auxiliary.GetInt(input, 0, 1, "Digite o tipo de movimentação: 0 para depósito, 1 para remoção");
+		TipoDeMovimentacao tipo = TipoDeMovimentacao.values()[t];
+		
+		float qtd = IO_Auxiliary.GetFloat(input, Float.MIN_VALUE, Float.MAX_VALUE, "Digite a quantidade de mercadoria movimentada");
+		
+		try
+		{
+			Estocagem es = new Estocagem(pos, mer, data, tipo, qtd);
+			System.out.println("Movimentação registrada com sucesso");
+			return es;
 		}
+		catch(Exception e)
+		{
+			System.out.println(e.getMessage());
+			System.out.println("Registro abortado");
+			return null;
+		}
+		
 	}
+	
 }
