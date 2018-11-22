@@ -72,9 +72,13 @@ public class ControllerEstocagem {
 		
 		float qtd = IO_Auxiliary.GetFloat(input, Float.MIN_VALUE, Float.MAX_VALUE, "Digite a quantidade de mercadoria movimentada");
 		
+		System.out.println("Insira o nome do funcionario responsável");
+		String funcionario = input.nextLine();
+		
+		
 		try
 		{
-			Estocagem es = new Estocagem(pos, mer, data, tipo, qtd);
+			Estocagem es = new Estocagem(pos, mer, data, tipo, qtd, funcionario);
 			System.out.println("Movimentação registrada com sucesso");
 			return es;
 		}

@@ -17,13 +17,17 @@ public class Estocagem {
 	private PosicaoEmEstoque posicao;
 	private Mercadoria mercadoria;
 	
-	public Estocagem(PosicaoEmEstoque posicao, Mercadoria mercadoria, Date data, TipoDeMovimentacao tipo, float qtdTransferida) 
+	//to-do
+	private String funcionarioResponsavel;
+	
+	public Estocagem(PosicaoEmEstoque posicao, Mercadoria mercadoria, Date data, TipoDeMovimentacao tipo, float qtdTransferida, String funcionario) 
 	{
 		this.posicao = posicao;
 		this.mercadoria = mercadoria;
 		this.data = data;
 		this.tipo = tipo;
 		this.QuantidadeTransferida = qtdTransferida;
+		this.funcionarioResponsavel = funcionario;
 		
 		if(posicao == null)
 		{
@@ -41,7 +45,7 @@ public class Estocagem {
 			throw new IllegalArgumentException("Quantidade transferida deve ser superior a 0.");
 		}
 		
-		if(data == null || tipo == null)
+		if(data == null || tipo == null || funcionarioResponsavel == null)
 		{
 			throw new IllegalArgumentException("Argumentos nulos não são válidos");
 		}
